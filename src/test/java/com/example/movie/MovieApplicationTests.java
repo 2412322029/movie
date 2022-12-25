@@ -8,6 +8,7 @@ class MovieApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println();
     }
 
 }
