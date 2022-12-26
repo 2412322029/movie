@@ -1,6 +1,6 @@
 package com.example.movie.dao;
 
-import com.example.movie.pojo.admin;
+import com.example.movie.pojo.Admin;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,5 +10,7 @@ public interface adminMapper {
     /*
     * 抽象方法
     * */
-    List<admin> findAll();
+    List<Admin> findAll();
+
+    Admin selectByName(String name, String pwd);
 }

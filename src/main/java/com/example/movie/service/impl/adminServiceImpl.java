@@ -1,7 +1,7 @@
 package com.example.movie.service.impl;
 
 import com.example.movie.dao.adminMapper;
-import com.example.movie.pojo.admin;
+import com.example.movie.pojo.Admin;
 import com.example.movie.service.adminService;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,12 @@ public class adminServiceImpl implements adminService {
     private adminMapper adminMapper;
 
     @Override
-    public List<admin> findAll(){
+    public List<Admin> findAll(){
         return adminMapper.findAll();
+    }
+
+    @Override
+    public Admin login(String name, String pwd) {
+        return adminMapper.selectByName(name,pwd);
     }
 }

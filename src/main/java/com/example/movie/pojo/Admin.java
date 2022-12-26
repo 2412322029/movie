@@ -3,7 +3,7 @@ package com.example.movie.pojo;
 import lombok.Data;
 
 @Data
-public class admin {
+public class Admin {
     private Integer id;
     private String name;
     private String pwd;

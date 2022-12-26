@@ -1,0 +1,24 @@
+GET http://localhost:8080/movie/admin/adminList
+Accept: application/json
+
+
+###用户登录
+POST http://localhost:8080/movie/user/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+###用户注册
+POST http://localhost:8080/movie/user/register
+Content-Type: application/json
+
+{
+  "username": "test1",
+  "password": "123456",
+  "truename": "mw",
+  "usersex" : "woman",
+  "usertel" : "120129123"
+}
