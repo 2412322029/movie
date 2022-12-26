@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.movie.dao.UserMapper">
+    <insert id="adduser" parameterType="com.example.movie.pojo.User"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into tb_user values
+        (null,#{username},#{password},#{truename},#{usersex},
+         #{usertel},#{userstatus})
+    </insert>
+    <select id="checkUser" parameterType="com.example.movie.pojo.User"
+            resultType="com.example.movie.pojo.User"
+           >
+        select * from tb_user where username=#{username} and password=#{password}
+    </select>
+    <select id="selectByName" resultType="com.example.movie.pojo.User" parameterType="java.lang.String">
+        select * from tb_user where username=#{username}
+    </select>
+</mapper>

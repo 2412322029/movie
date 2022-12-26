@@ -1,7 +1,8 @@
 package com.example.movie.controller;
 
 import com.example.movie.pojo.Admin;
-import com.example.movie.service.adminService;
+import com.example.movie.pojo.Result;
+import com.example.movie.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +13,9 @@ import java.util.List;
 @RequestMapping("/admin")
 @CrossOrigin
 @Slf4j
-public class adminController {
+public class AdminController {
     @Resource
-    private adminService adminService;
+    private AdminService adminService;
 
     @GetMapping("/adminList")
     public List<Admin> findAdminList(){
@@ -24,7 +25,7 @@ public class adminController {
     }
 
     @PostMapping("/login")
-    public Admin login(@RequestBody Admin ad){
+    public Result<Admin> login(@RequestBody Admin ad){
         return adminService.login(ad.getName(),ad.getPwd());
 
     }

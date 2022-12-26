@@ -39,11 +39,11 @@
                 axios.post("http://localhost:8080/movie/user/login"
                     , this.user).then((res) => {
                         console.info(res.data);
-                        if (res.data !== "") {
-                            alert("成功")
+                        if (res.data.success) {
+                            alert(res.data.message+res.data.code)
                             location.href = "index.html"
                         } else {
-                            this.errmsg = "用户名或密码错误"
+                            this.errmsg = res.data.message
                         }
                     }
                 )

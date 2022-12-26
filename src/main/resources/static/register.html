@@ -61,11 +61,11 @@
                 axios.post("http://localhost:8080/movie/user/register"
                     , this.user).then((res) => {
                         console.info(res.data);
-                        if (res.data !== "true") {
-                            alert("成功")
+                        if (res.data.success) {
+                            alert(res.data.message+res.data.code)
                             location.href = "index.html"
                         } else {
-                            this.errmsg = "注册失败"
+                            this.errmsg = res.data.message+res.data.code
                         }
                     }
                 )

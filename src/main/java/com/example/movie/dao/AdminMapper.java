@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface adminMapper {
+public interface AdminMapper {
     /*
     * 抽象方法
     * */

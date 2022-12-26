@@ -22,3 +22,12 @@ Content-Type: application/json
   "usersex" : "woman",
   "usertel" : "120129123"
 }
+
+###影厅添加
+POST http://localhost:8080/movie/hall/addHall
+Content-Type: application/json
+
+{
+  "name":"1",
+  "seats": "[0]"
+}

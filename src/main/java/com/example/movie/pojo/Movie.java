@@ -1,6 +1,6 @@
 package com.example.movie.pojo;
 
-public class movie {
+public class Movie {
     private Integer id;
     private String name;
 

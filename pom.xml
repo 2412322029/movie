@@ -80,7 +80,9 @@
                 <includes>
                     <include>**/*.xml</include>
                 </includes>
+                <filtering>true</filtering>
             </resource>
+
         </resources>
     </build>
 

@@ -1,11 +1,12 @@
 package com.example.movie.service;
 
 import com.example.movie.pojo.Admin;
+import com.example.movie.pojo.Result;
 
 import java.util.List;
 
-public interface adminService {
+public interface AdminService {
     List<Admin> findAll();
 
-    Admin login(String name, String pwd);
+    Result<Admin> login(String name, String pwd);
 }
