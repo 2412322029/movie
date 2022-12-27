@@ -7,6 +7,7 @@ import com.example.movie.service.HallService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,5 +28,11 @@ public class HallServiceImpl implements HallService {
        }else {
            return Result.fail("信息为空");
        }
+    }
+
+    @Override
+    public Result<List<Hall>> findAll() {
+        List<Hall> listHall=hallMapper.findAll();
+        return Result.success("查询成功",listHall);
     }
 }

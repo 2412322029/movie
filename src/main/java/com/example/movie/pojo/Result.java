@@ -3,6 +3,8 @@ package com.example.movie.pojo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Data
 @Accessors(chain = true)
 public class Result<T> {
@@ -11,7 +13,7 @@ public class Result<T> {
     private String message;
     private T data;
 
-    public static <T> Result<T> createResult(Boolean success, Integer code, String message, T data) {
+    public static <T> Result<T> createResult(boolean success, Integer code, String message, T data) {
         Result<T> result = new Result<>();
         result.setSuccess(success);
         result.setCode(code);

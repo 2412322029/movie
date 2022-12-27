@@ -31,3 +31,25 @@ Content-Type: application/json
   "name":"1",
   "seats": "[0]"
 }
+
+###影片信息添加
+POST http://localhost:8080/movie/movie/addMovie
+Content-Type: application/json
+
+{
+  "name": "阿凡达",
+  "img" : "https://bkimg.cdn.bcebos.com/pic/b3fb43166d224f4a20a457ae06a187529822720e7b4a",
+  "description": "《阿凡达》是由二十世纪福克斯电影公司出品，詹姆斯·卡梅隆执导，萨姆·沃辛顿、佐伊·索尔达娜、西格妮·韦弗领衔主演的科幻电影",
+  "director": "詹姆斯·卡梅隆",
+  "writer": "乔恩·兰道",
+  "actor": "萨姆·沃辛顿、佐伊·索尔达娜、西格妮·韦弗、乔·摩",
+  "type": "动作、科幻、剧情、冒险",
+  "area": "美国、英国",
+  "language": "英语",
+  "showtime": "2018-12-27",
+  "length": 120,
+  "grade": 12.9,
+  "status": 0,
+  "link": "https://baike.baidu.com/item/%E9%98%BF%E5%87%A1%E8%BE%BE/32205"
+
+}

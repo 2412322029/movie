@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 @Mapper
+
 public interface BaseMapper<T,K> {
     //增删改查信息
     int save(T t);

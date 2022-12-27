@@ -5,4 +5,10 @@
         insert into tb_hall (id,name,seats,status)
         values (#{id},#{name},#{seats},#{status})
     </insert>
+    <delete id="delete">
+        delete from tb_hall where id=#{id}
+    </delete>
+    <select id="findAll" resultType="com.example.movie.pojo.Hall">
+        select * from tb_hall
+    </select>
 </mapper>
