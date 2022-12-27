@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影厅列表</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span class="badge badge-info">{{errmsg}}</span>
+        <div class="row m-3">
+            <div v-for="i in hall" class="card col-10 m-1 bg-light">
+                <h5 class="card-title">{{i.name}}</h5>
+                <div class="card-body">
+                    座位：<br>
+                    <div v-for="j,index in i.seats" class="border m-2 p-2 border-info rounded">
+                        第{{index+1}}排:
+                        <span v-for="x in j">
+                            <span v-if="x==0" class="badge badge-success  m-2">空</span>
+                            <span v-if="x==1" class="badge badge-danger m-2">满</span>
+                        </span>
+                    </div>
+                    <a href="#" class="btn btn-danger" @click="delHall(i.id)">
+                        <i class=" fa fa-minus-circle"></i>删除
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            hall: [],
+            errmsg: "",
+            s: []
+        },
+        created() {
+            this.findall()
+        },
+        mounted() {
+
+        },
+        methods: {
+            findall() {
+                axios.post("http://localhost:8080/movie/hall/findHall"
+                    ).then((res) => {
+                        console.info(res.data);
+                        if (res.data.success) {
+                            this.errmsg = res.data.message;
+                            this.hall = res.data.data
+                            for (let i = 0; i < this.hall.length; i++) {
+                                this.hall[i].seats = eval(this.hall[i].seats)
+                            }
+                        } else {
+                            this.errmsg = res.data.message;
+                        }
+                    }
+                    )
+            },
+
+        }
+    });
+
+</script>
+
+</html>

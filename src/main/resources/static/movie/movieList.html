@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影片列表</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span class="badge badge-info">{{errmsg}}</span>
+        <div v-for="i in movie" class="card m-2 col-11">
+           <p> id{{i.id}}</p>
+            <p>{{i.name}}</p> 
+            <img src="{{i.img}}" alt="">
+            <p>描述: {{i.description}}</p>
+            <p> 导演: {{i.director}}</p>
+            <p>作者:{{i.writer}}</p>
+            <p>演员:{{i.actor}}</p>
+            <p>类型:{{i.type}}</p>
+            <p>地区:{{i.area}}</p>
+            <p>语言:{{i.language}}</p>
+            <p>上映时间:{{i.showtime}}</p>
+            <p>长度: {{i.length}}</p>
+            <p> 分数:{{i.grade}}</p>
+            <p> {{i.status}}</p>
+            <p> 链接:{{i.link}}</p>
+        </div>
+
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            movie: [],
+            errmsg: "",
+            s: []
+        },
+        created() {
+            this.findall()
+        },
+        mounted() {
+
+        },
+        methods: {
+            findall() {
+                axios.post("http://localhost:8080/movie/movie/findAll"
+                ).then((res) => {
+                    console.info(res.data);
+                    if (res.data.success) {
+                        this.errmsg = res.data.message;
+                        this.movie = res.data.data
+
+                    } else {
+                        this.errmsg = res.data.message;
+                    }
+                }
+                )
+            },
+
+        }
+    });
+
+</script>
+
+</html>

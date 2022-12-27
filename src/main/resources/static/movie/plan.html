@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影片列表</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="page-header">
+            <h2 class="text-center text-primary">新增电影排片</h2>
+        </div>
+
+        <form action="" method="post">
+            <div class="form-group row">
+                <div class="col-12 text-center text-danger">
+                    {{errMsg}}
+                </div>
+            </div>
+            <!--电影名称-->
+            <div class="form-group row">
+                <label for="movie_id" class="col-2 offset-2 col-form-label text-right">电影名称</label>
+                <div class="col-6">
+                    <select class="form-control" id="movie_id" v-model="plan.movie_id">
+                        <option v-for="movie in movieList" :key="movie.id" :value="movie.id">
+                            {{movie.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 影厅名称 -->
+            <div class="form-group row">
+                <label for="hall_id" class="col-2 offset-2 col-form-label text-right">影厅名称</label>
+                <div class="col-6">
+                    <select class="form-control" id="hall_id" v-model="plan.hall_id">
+                        <option v-for="hall in hallList" :key="hall.id" :value="hall.id">
+                            {{hall.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--放映时间-->
+            <div class="form-group row">
+                <label for="playtime" class="col-2 offset-2 col-form-label text-right">放映时间</label>
+                <div class="col-6">
+                    <input type="datetime-local" class="form-control" id="playtime" v-model="plan.playtime">
+                </div>
+            </div>
+
+            <!--电影票价-->
+            <div class="form-group row">
+                <label for="price" class="col-2 offset-2 col-form-label text-right">电影票价</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="price" v-model="plan.price">
+                </div>
+            </div>
+
+            <!--添加排片的按钮-->
+            <div class="form-group row">
+                <div class="col-6 offset-4">
+                    <button type="button" class="form-control btn btn-primary" id="addBtn" @click="addPlan">添加</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            movieList: [],
+            hallList: [],
+            plan: {},
+            errMsg: "",
+        },
+        created() {
+            this.findall()
+        },
+        mounted() {
+
+        },
+        methods: {
+            findall() {
+                axios.post("http://localhost:8080/movie/movie/findAll"
+                ).then((res) => {
+                    console.info(res.data);
+                    if (res.data.success) {
+                        this.errMsg += "|" + res.data.message;
+                        this.movieList = res.data.data
+                    } else {
+                        this.errMsg += "|" + res.data.message;
+                    }
+                }
+                )
+                axios.post("http://localhost:8080/movie/hall/findHall"
+                ).then((res) => {
+                    console.info(res.data);
+                    if (res.data.success) {
+                        this.errMsg += "|" + res.data.message;
+                        this.hallList = res.data.data
+                    } else {
+                        this.errMsg += "|" + res.data.message;
+                    }
+                }
+                )
+            },
+            addPlan() {
+                console.log(this.plan);
+            }
+        }
+    });
+
+</script>
+
+</html>
