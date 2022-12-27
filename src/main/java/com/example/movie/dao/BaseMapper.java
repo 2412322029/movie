@@ -22,4 +22,5 @@ public interface BaseMapper<T,K> {
                        @Param("rows") Integer rows);
 
     Integer findTotals();
+
 }

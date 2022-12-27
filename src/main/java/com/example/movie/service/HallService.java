@@ -9,4 +9,6 @@ public interface HallService {
     Result<Hall> addHall(Hall hall);
 
     Result<List<Hall>> findAll();
+
+    Result<Hall> delete(Hall hall);
 }

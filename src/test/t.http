@@ -53,3 +53,11 @@ Content-Type: application/json
   "link": "https://baike.baidu.com/item/%E9%98%BF%E5%87%A1%E8%BE%BE/32205"
 
 }
+
+###删除
+POST http://localhost:8080/movie/hall/delete
+Content-Type: application/json
+
+{
+  "id":16
+}

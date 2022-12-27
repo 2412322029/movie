@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -52,5 +53,11 @@ public class UserServiceImpl implements UserService {
 
         }
 
+    }
+
+    @Override
+    public Result<List<User>> findAllUser() {
+        List<User> uList= userMapper.findAll();
+        return Result.success("用户信息查询成功",uList);
     }
 }

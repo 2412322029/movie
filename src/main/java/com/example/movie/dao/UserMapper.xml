@@ -15,4 +15,7 @@
     <select id="selectByName" resultType="com.example.movie.pojo.User" parameterType="java.lang.String">
         select * from tb_user where username=#{username}
     </select>
+    <select id="findAll" resultType="com.example.movie.pojo.User">
+        select * from tb_user
+    </select>
 </mapper>

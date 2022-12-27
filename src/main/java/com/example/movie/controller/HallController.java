@@ -29,4 +29,10 @@ public class HallController {
         return hallService.findAll();
 
     }
+    @RequestMapping("/delete")
+    public Result<Hall> delete(@RequestBody Hall hall){
+        return hallService.delete(hall);
+
+    }
+
 }

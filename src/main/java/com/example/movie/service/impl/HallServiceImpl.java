@@ -35,4 +35,14 @@ public class HallServiceImpl implements HallService {
         List<Hall> listHall=hallMapper.findAll();
         return Result.success("查询成功",listHall);
     }
+
+    @Override
+    public Result<Hall> delete(Hall hall) {
+        int n=hallMapper.delete(hall);
+        if (n>0){
+            return Result.success("删除成功",null);
+        }else {
+            return Result.fail("删除失败");
+        }
+    }
 }

@@ -119,6 +119,20 @@
                 )
             },
             addPlan() {
+                if (this.plan.price!==undefined){
+                    axios.post("http://localhost:8080/movie/plan/addPlan"
+                    ,this.plan).then((res) => {
+                            console.info(res.data);
+                            if (res.data.success) {
+                                this.errMsg = res.data.message;
+                            } else {
+                                this.errMsg = res.data.message;
+                            }
+                        }
+                    )
+                }else {
+                    alert("不能为空")
+                }
                 console.log(this.plan);
             }
         }
