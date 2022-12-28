@@ -21,7 +21,7 @@ public class MovieServiceImpl implements MovieService {
 
             int n=movieMapper.save(movie);
             if (n > 0){
-                return Result.success("影片添加成功",null);
+                return Result.success("影片添加成功",movie);
             }else {
                 return Result.fail("影片添加失败");
             }

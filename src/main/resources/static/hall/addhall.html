@@ -108,6 +108,7 @@
 						axios.post("http://localhost:8080/movie/hall/addHall"
 							, this.hall).then((res) => {
 								console.info(res.data);
+								location.href="hallList.html"
 								if (res.data.success) {
 									this.errmsg = res.data.message;
 								} else {

@@ -4,12 +4,10 @@
     <select id="findAll" resultType="com.example.movie.pojo.Movie">
         select * from tb_movie
     </select>
-    <insert id="save">
-        insert into tb_movie (id, name, img, description, director, writer,
-                              actor, type, area, language, showtime, length,
-                              grade, status, link)
+    <insert id="save" parameterType="com.example.movie.pojo.Movie">
+        insert into tb_movie
         values (#{id}, #{name}, #{img}, #{description}, #{director}, #{writer},
                    #{actor}, #{type}, #{area}, #{language}, #{showtime}, #{length},
-                    #{grade}, #{status}, #{link})
+                    #{grade}, 0, #{link})
     </insert>
 </mapper>

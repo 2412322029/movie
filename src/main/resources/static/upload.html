@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理-添加影片</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.css">
+
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="app">
+
+            <div id="div-upload" @click="clickUploadDiv" class="btn btn-primary">
+                <i class="fa fa-cloud-upload"></i>
+            </div>
+            <input type="file" id="imgfile" @change="changeFile($event)" style="display: none;" ref="myFile">
+            <a :href="url">{{url}}</a>
+        </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            url: ""
+        },
+        methods: {
+            clickUploadDiv() {
+                $("#imgfile").click()
+            },
+            changeFile(event) {
+                if (!event.target.files[0].size) {
+                    return;
+                }
+                let formData = new FormData();
+                formData.append("file", this.$refs.myFile.files[0])
+                axios({
+                    method: 'post',
+                    url: "http://localhost:8080/movie/movie/upload",
+                    data: formData,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then((res) => {
+                    console.info(res)
+                    alert(res.data.message)
+                    this.url = "http://localhost:8080/movie/" + res.data.path
+                })
+            }
+        }
+    });
+</script>
+
+</html>

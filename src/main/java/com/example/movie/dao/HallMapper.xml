@@ -11,4 +11,20 @@
     <select id="findAll" resultType="com.example.movie.pojo.Hall">
         select * from tb_hall
     </select>
+
+    <select id="findByPage" resultType="com.example.movie.pojo.Hall">
+        select id,name,seats,status
+        from tb_hall
+        order by id
+        limit #{start},#{rows}
+    </select>
+
+    <select id="findTotals" resultType="integer">
+        select count(*) from tb_hall
+    </select>
+
+    <update id="update" parameterType="com.example.movie.pojo.Hall">
+        update tb_hall set name=#{name},seats=#{seats}
+        where id=#{id}
+    </update>
 </mapper>

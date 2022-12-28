@@ -1,13 +1,138 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>添加影厅信息</title>
+    <title>后台管理-添加影片</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.css">
+    <style type="text/css">
+        #div-upload {
+            width: 80px;
+        }
+
+        #img_show {
+            max-width: 300px; 
+            max-height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!--标题-->
+        <div class="page-header">
+            <h2 class="text-center text-primary">电影信息</h2>
+        </div>
+        <!--表单-->
+        <div id="app">
+            <form action="" method="post" enctype="multipart/form-data">
+                <!--电影名称-->
+                <div class="form-group row">
+                    <label for="name" class="col-2 col-form-label text-right">影片名称</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="name" v-model="movie.name">
+                    </div>
+                </div>
+                <!--电影封面-->
+                <div class="form-group row">
+                    <label for="imgfile" class="col-2 col-form-label text-right">影片封面</label>
+                    <div class="col-10">
+                        <!--影片图片预览区域-->
+                        <img :src="imgUrl" id="img_show" v-if="imgUrl">
+                        <!--图片选择的按钮-->
+                        <div id="div-upload" @click="clickUploadDiv" class="btn btn-primary">
+                            <!--这是从我们字体库里面找的像之前添加影厅信息的每一排的提示一样,添加了一个图标进来-->
+                            <i class="fa fa-cloud-upload"></i>
+                        </div>
+                        <!--选择要上传的文件-->
+                        <input type="file" id="imgfile" @change="changeFile($event)" style="display: none;"
+                            ref="myFile">
+                    </div>
+                </div>
+                <!-- 导演-->
+                <div class="form-group row">
+                    <label for="director" class="col-2 col-form-label text-right">影片导演</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="director" v-model="movie.director">
+                    </div>
+                </div>
+                <!-- 编剧-->
+                <div class="form-group row">
+                    <label for="writer" class="col-2 col-form-label text-right">影片编剧</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="writer" v-model="movie.writer">
+                    </div>
+                </div>
+                <!-- 主演-->
+                <div class="form-group row">
+                    <label for="actor" class="col-2 col-form-label text-right">影片主演</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="actor" v-model="movie.actor">
+                    </div>
+                </div>
+                <!-- 类型-->
+                <div class="form-group row">
+                    <label for="type" class="col-2 col-form-label text-right">影片类型
+                    </label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="type" v-model="movie.type">
+                    </div>
+                </div>
+                <!--制片国家/地区-->
+                <div class="form-group row">
+                    <label for="area" class="col-2 col-form-label text-right">国家/地区</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="area" v-model="movie.area">
+                    </div>
+                </div>
+                <!-- 语言-->
+                <div class="form-group row">
+                    <label for="language" class="col-2 col-form-label text-right">影片语言</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="language" v-model="movie.language">
+                    </div>
+                </div>
+                <!-- 上映时间-->
+                <div class="form-group row">
+                    <label for="showtime" class="col-2 col-form-label text-right">上映时间</label>
+                    <div class="col-10">
+                        <input type="date" class="form-control" id="showtime" v-model="movie.showtime">
+                    </div>
+                </div>
+                <!-- 影片片长-->
+                <div class="form-group row">
+                    <label for="length" class="col-2 col-form-label text-right">影片时长</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="length" v-model="movie.length">
+                    </div>
+                </div>
+                <!-- IMDb链接-->
+                <div class="form-group row">
+                    <label for="link" class="col-2 col-form-label text-right">IMDb链接</label>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="link" v-model="movie.link">
+                    </div>
+                </div>
+                <!-- 影片描述-->
+                <div class="form-group row">
+                    <label for="description" class="col-2 col-form-label text-right">影片描述</label>
+                    <div class="col-10">
+                        <textarea class="form-control" id="description" v-model="movie.description" rows="4"
+                            placeholder="请输入影片描述信息">
+                </textarea>
+                    </div>
+                </div>
+                <!-- 添加影片按钮 -->
+                <div class="form-group row">
+                    <div class="col-3 offset-2">
+                        <button type="button" class=" form-control btn btn-primary" id="addBtn" @click="addMovie">添加
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="../js/jquery-3.3.1.js"></script>
     <script src="../js/vue.js"></script>
@@ -15,187 +140,67 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap.bundle.js"></script>
 
-
-</head>
-
-
-<body>
-
-    <div id="app">
-        <div class="container">
-            <div class="page-header">
-                <h2 class="text-center text-primary">添加影片</h2>
-            </div>
-            <div class="form-group row">
-                <div class="m-2 row col-10">
-                    <label for="name" class="col-2 col-form-label text-right">
-                        影片名称
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="name" name="name" class="form-control" v-model="movie.name">
-                    </div>
-                </div>
-
-                <div class="m-2 row col-10">
-                    <label for="description" class="col-2 col-form-label text-right">
-                        影片描述
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="description" name="description" class="form-control"
-                            v-model="movie.description">
-                    </div>
-                </div>
-
-                <div class="m-2 row col-10">
-                    <label for="director" class="col-2 col-form-label text-right">
-                        导演
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="director" name="director" class="form-control" v-model="movie.director">
-                    </div>
-                </div>
-
-                <div class="m-2 row col-10">
-                    <label for="writer" class="col-2 col-form-label text-right">
-                        作者
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="writer" name="writer" class="form-control" v-model="movie.writer">
-                    </div>
-                </div>
-
-                <div class="m-2 row col-10">
-                    <label for="actor" class="col-2 col-form-label text-right">
-                        演员
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="actor" name="actor" class="form-control" v-model="movie.actor">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="type" class="col-2 col-form-label text-right">
-                        类型
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="type" name="type" class="form-control" v-model="movie.type">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="area" class="col-2 col-form-label text-right">
-                        地区
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="area" name="area" class="form-control" v-model="movie.area">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="language" class="col-2 col-form-label text-right">
-                        语言
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="language" name="language" class="form-control" v-model="movie.language">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="showtime" class="col-2 col-form-label text-right">
-                        上映时间
-                    </label>
-                    <div class="col-10 ">
-                        <input type="date" id="showtime" name="showtime" class="form-control" v-model="movie.showtime">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="length" class="col-2 col-form-label text-right">
-                        长度
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="length" name="length" class="form-control" v-model="movie.length">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="grade" class="col-2 col-form-label text-right">
-                        分数{{movie.grade}}
-                    </label>
-                    <div class="col-10 ">
-                        <input type="range" min="0" max="5" step="0.5" id="grade" name="grade" class="form-control"
-                            v-model="movie.grade">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="status" class="col-2 col-form-label text-right">
-                        状态
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="status" name="status" class="form-control" v-model="movie.status">
-                    </div>
-                </div>
-                <div class="m-2 row col-10">
-                    <label for="link" class="col-2 col-form-label text-right">
-                        链接
-                    </label>
-                    <div class="col-10 ">
-                        <input type="text" id="link" name="link" class="form-control" v-model="movie.link">
-                    </div>
-                </div>
-                <div class="col-3 offset-2">
-                    <button type="button" class="form-control btn btn-primary" @click="add">
-                        添加
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    </div>
-    <script>
-        const app = new Vue({
-            el: "#app",
-            data: {
-                movie: {
-                },
-                errmsg: "",
-                ds: [
-                    ["影片名称", "name"],
-                    ["影片描述", "description"],
-                    ["导演", "director"],
-                    ["作者", "writer"],
-                    ["演员", "actor"],
-                    ["类型", "type"],
-                    ["地区", "area"],
-                    ["语言", "language"],
-                    ["上映时间", "showtime"],
-                    ["长度", "length"],
-                    [" 分数", "grade"],
-                    ["状态", "status"],
-                    [" 链接", "link"],
-                ]
-            },
-            computed: {
-
-            },
-            methods: {
-                add() {
-
-                    if (this.movie.name == undefined | this.movie.description == undefined) {
-                        alert("不能为空")
-                    } else {
-                        axios.post("http://localhost:8080/movie/movie/addMovie"
-                            , this.movie).then((res) => {
-                                console.info(res.data);
-                                if (res.data.success) {
-                                    this.errmsg = res.data.message;
-                                } else {
-                                    this.errmsg = res.data.message;
-                                }
-                            }
-                            )
-                    }
-
-                }
-            }
-        });
-
-    </script>
 </body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            movie: {},
+            imgUrl: ""
+
+        },
+        methods: {
+            clickUploadDiv() {
+                $("#imgfile").click()
+            },
+            changeFile(event) {
+                if (!event.target.files[0].size) {
+                    return;
+                }
+                if (event.target.files[0].type.indexOf("image") == -1) {
+                    console.info("请选择图片")
+                } else {
+                    const that = this;
+                    const reader = new FileReader();
+                    reader.readAsDataURL(event.target.files[0])
+                    reader.onload = function() {
+                        that.imgUrl = this.result;
+                    }
+                }
+            },
+            addMovie(){
+                if (this.imgUrl=="") {
+                    alert("选择图片")
+                    return;
+                }
+                console.info(this.movie)
+                let formData = new FormData();
+                formData.append("name",this.movie.name)
+                formData.append("file",this.$refs.myFile.files[0])
+                formData.append("description",this.movie.description)
+                formData.append("director",this.movie.director)
+                formData.append("writer",this.movie.writer)
+                formData.append("actor",this.movie.actor)
+                formData.append("type",this.movie.type)
+                formData.append("area",this.movie.area)
+                formData.append("language",this.movie.language)
+                formData.append("showtime",this.movie.showtime)
+                formData.append("length",this.movie.length)
+                formData.append("link",this.movie.link)
+
+                axios({
+                    method:'post',
+                    url:"http://localhost:8080/movie/movie/addMovie",
+                    data:formData,
+                    headers:{
+                        "Content-Type":"multipart/form-data"
+                    }
+                }).then((res) =>{
+                    console.info(res)
+                })
+            }
+        }
+    });
+</script>
 
 </html>

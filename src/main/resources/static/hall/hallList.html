@@ -17,60 +17,186 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" class="container">
         <span class="badge badge-info">{{errmsg}}</span>
-        <div class="row m-3">
-            <div v-for="i in hall" class="card col-10 m-1 bg-light">
-                <h5 class="card-title">{{i.name}}</h5>
-                <div class="card-body">
-                    座位：<br>
-                    <div v-for="j,index in i.seats" class="border m-2 p-2 border-info rounded">
-                        第{{index+1}}排:
-                        <span v-for="x in j">
-                            <span v-if="x==0" class="badge badge-success  m-2">空</span>
-                            <span v-if="x==1" class="badge badge-danger m-2">满</span>
+        <div class="page-header">
+            <h2 class="text-center text-primary">影厅列表</h2>
+        </div>
+        <span>共{{totals}}条数据</span>
+
+        <!-- table -->
+        <table class="table table-bordered text-center">
+            <!-- 表头 -->
+            <thead>
+                <tr>
+                    <th scope="col">编号</th>
+                    <th scope="col">名称</th>
+                    <th scope="col">座位</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <!-- 表格主体 -->
+            <tbody>
+                <tr v-for="hall,inx in hallList" :key="hall.id">
+                    <td v-text="hall.id"></td>
+                    <td v-text="hall.name"></td>
+
+                    <td class="text-left">
+                        <div v-for="j,index1 in hall.seats" class="border m-2 p-2 border-info rounded">
+                            第{{index1+1}}排:
+                            <span v-for="x in j">
+                                <span style=" width: 25px;height: 28px;display: inline-block" class="ml-2">
+                                    <span v-if="x==0" class="badge badge-success">空</span>
+                                    <span v-if="x==1" class="badge badge-danger">满</span>
+                                </span>
+
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <a href="#" @click="change(inx)">修改</a>
+                        <a href="#">删除</a>
+
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="card fixed-top m-3 shadow " :class="{'invisible ':open==false}">
+            <div class="card-header">
+                修改{{nowlist.id}}号
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">名称：
+                    <input class="form-control" type="text" v-model="nowlist.name">
+                </h5>
+                <p class="card-text">
+                <div v-for="j,index1 in nowlist.seats" class="border m-2 p-2 border-info rounded">
+                    第{{index1+1}}排:
+                    <span v-for="x,index2 in j" style="cursor: pointer;">
+                        <span style=" width: 25px;height: 28px;display: inline-block" class="ml-2">
+                            <span v-if="x==0" @click="togo(nowlist.id,index1,index2,nownum)"
+                                class="badge badge-success">空
+                            </span>
+                            <span v-if="x==1" @click="togo(nowlist.id,index1,index2,nownum)"
+                                class="badge badge-danger">满
+                            </span>
                         </span>
-                    </div>
-                    <a href="#" class="btn btn-danger" @click="delHall(i.id)">
-                        <i class=" fa fa-minus-circle"></i>删除
-                    </a>
+
+                    </span>
                 </div>
+                </p>
+                <a href="#" class="btn btn-danger" @click="open=false">关闭</a>
+                <a href="#" class="btn btn-primary" @click="updata">提交</a>
             </div>
         </div>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{'disabled':pageNum==1}">
+                    <a href="#" @click="findall(pageNum-1)" class="page-link">&laquo;</a>
+                </li>
+                <li class="page-item" v-for="indexPage in totalPage" :key="indexPage"
+                    :class="{'active':pageNum==indexPage}">
+                    <a href="#" @click="findall(indexPage)" class="page-link">{{indexPage}}</a>
+                </li>
+                <li class="page-item" :class="{'disabled':pageNum==totalPage}">
+                    <a href="#" @click="findall(pageNum+1)" class="page-link">&raquo;</a>
+                </li>
+                <span style="display: inherit;margin: 6px">每页</span>
+                <select class="form-control col-1 " v-model="pageSize">
+                    <option v-for="i in 5" :key="i" :value="i">
+                        {{i}}
+                    </option>
+                </select>
+                <span style="display: inherit;margin: 6px">条</span>
+
+            </ul>
+
+        </nav>
+
     </div>
 </body>
 <script>
     const app = new Vue({
         el: "#app",
         data: {
-            hall: [],
+            hallList: [],
+            pageNum: 1,
+            pageSize: 2,
+            totalPage: 0,
+            totals: 0,
+
+            open: false,
             errmsg: "",
-            s: []
+            nownum: null,
+            nowlist: []
         },
         created() {
-            this.findall()
+            this.findall(this.pageNum)
         },
         mounted() {
 
         },
+        watch: {
+            pageSize(v) {
+                this.findall(this.pageNum)
+            }
+        },
         methods: {
-            findall() {
-                axios.post("http://localhost:8080/movie/hall/findHall"
-                    ).then((res) => {
+            updata() {
+                console.log("updata", this.nowlist);
+                this.open = false
+                var nn = this.nowlist
+                nn.seats = JSON.stringify(nn.seats)
+
+                axios.post("http://localhost:8080/movie/hall/update"
+                    , nn).then((res) => {
+                        console.info(res.data);
+                        if (res.data.success) {
+                            alert(this.errmsg)
+                            location.reload()
+                        } else {
+                            alert(this.errmsg)
+                        }
+                    })
+               
+            },
+            change(inx) {
+                this.open = true
+                this.nowlist = this.hallList[inx]
+                this.nownum = inx
+                console.log(this.nowlist);
+            },
+            togo(id, index1, index2, inx) {
+                var a = this.hallList[inx].seats[index1][index2]
+                this.hallList[inx].seats[index1][index2] = a == 0 ? 1 : 0
+                this.$forceUpdate()
+                console.log("id=" + id, "位置：(" + index1 + "," + index2 + ")", JSON.stringify(this.hallList[inx].seats));
+            },
+            findall(indexPage) {
+                if (indexPage) {
+                    this.pageNum = indexPage
+                }
+                axios.get("http://localhost:8080/movie/hall/findByPage?pageNum="
+                    + this.pageNum + "&pageSize=" + this.pageSize)
+                    .then((res) => {
                         console.info(res.data);
                         if (res.data.success) {
                             this.errmsg = res.data.message;
-                            this.hall = res.data.data
-                            for (let i = 0; i < this.hall.length; i++) {
-                                this.hall[i].seats = eval(this.hall[i].seats)
+                            this.hallList = res.data.data.hallList
+                            this.pageNum = res.data.data.pageNum
+                            this.totals = res.data.data.totals
+                            this.totalPage = res.data.data.totalPage
+
+                            for (let i = 0; i < this.hallList.length; i++) {
+                                this.hallList[i].seats = eval(this.hallList[i].seats)
                             }
                         } else {
                             this.errmsg = res.data.message;
                         }
-                    }
-                    )
-            },
-
+                    })
+            }
         }
     });
 

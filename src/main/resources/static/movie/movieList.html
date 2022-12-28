@@ -20,9 +20,9 @@
     <div id="app">
         <span class="badge badge-info">{{errmsg}}</span>
         <div v-for="i in movie" class="card m-2 col-11">
-           <p> id{{i.id}}</p>
-            <p>{{i.name}}</p> 
-            <img src="{{i.img}}" alt="">
+            <p> id{{i.id}}</p>
+            <p>{{i.name}}</p>
+            <img v-if="inc(i.img)" :src="basehost+i.img" alt="">
             <p>描述: {{i.description}}</p>
             <p> 导演: {{i.director}}</p>
             <p>作者:{{i.writer}}</p>
@@ -43,6 +43,7 @@
     const app = new Vue({
         el: "#app",
         data: {
+            basehost:'http://localhost:8080/movie/',
             movie: [],
             errmsg: "",
             s: []
@@ -54,6 +55,18 @@
 
         },
         methods: {
+            inc(i) {
+                if (i == null) {
+                    return false
+                } else {
+                    a = i.indexOf('upload')
+                    if (a == 0) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            },
             findall() {
                 axios.post("http://localhost:8080/movie/movie/findAll"
                 ).then((res) => {
