@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <title>用户登录页</title>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="page-header">
+            <h2 class="text-center text-primary">用户登录</h2>
+        </div>
+        <span style="color: red">
+            {{errmsg}}
+        </span>
+        <div class="row align-items-center">
+            <div class="col-sm"></div>
+            <div class="card col-sm mt-5">
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">用户名</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" v-model="user.username">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">密码</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1"
+                                v-model="user.password">
+                        </div>
+                        没有账号？->:<a href="register.html">注册</a>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                        </div>
+                        <button type="button" @click="login" class="btn btn-primary">登录</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm"></div>
+        </div>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            baseurl: "http://localhost:8080/movie/",
+            errmsg: "",
+            user: {
+            }
+        },
+        created() {
+            // this.check()
+        },
+        methods: {
+            check() {
+                var u = this.getCookie("username")
+                var p = this.getCookie("password")
+                if (u != "" && u != null && p != "" && p != null) {
+                    this.user.username = u
+                    this.user.password = p
+                    this.login()
+                }
+            },
+            login() {
+                axios.post(this.baseurl + "user/login"
+                    , this.user).then((res) => {
+                        console.info(res.data);
+                        if (res.data.success) {
+                            this.addCookie("username", this.user.username)
+                            this.addCookie("password", this.user.password)
+                            alert(res.data.message + res.data.code)
+                            location.href = "/"
+                        } else {
+                            this.errmsg = res.data.message + res.data.code
+                        }
+                    }
+                    )
+            },
+            addCookie(name, value) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() + 3 * 24 * 60 * 60 * 1000);//3天
+                document.cookie = name + "=" + value + ";expires=" + exp.toGMTString() + ";path=/";
+            },
+            getCookie(name) {
+                var strCookies = document.cookie;
+                var array = strCookies.split('; ');
+                for (var i = 0; i < array.length; i++) {
+                    var item = array[i].split("=");
+                    if (item[0] == name) {
+                        return item[1];
+                    }
+                }
+                return null;
+            }
+        }
+    })
+</script>
+
+</html>

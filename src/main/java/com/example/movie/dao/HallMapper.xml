@@ -12,6 +12,10 @@
         select * from tb_hall
     </select>
 
+    <select id="findOne" parameterType="integer" resultType="com.example.movie.pojo.Hall">
+        select id,name,seats,status from tb_hall where id = #{id}
+    </select>
+
     <select id="findByPage" resultType="com.example.movie.pojo.Hall">
         select id,name,seats,status
         from tb_hall

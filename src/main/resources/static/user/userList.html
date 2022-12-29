@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户列表</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <span class="badge badge-info">{{errmsg}}</span>
+        <div class="page-header">
+            <h2 class="text-center text-primary">用户列表</h2>
+        </div>
+        <span>共{{totals}}条数据</span>
+
+        <!-- table -->
+        <table class="table table-bordered text-center">
+            <!-- 表头 -->
+            <thead>
+                <tr>
+                    <th scope="col">编号</th>
+                    <th scope="col">用户名</th>
+                    <th scope="col">性别</th>
+                    <th scope="col">电话</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <!-- 表格主体 -->
+            <tbody>
+                <tr v-for="user in userList" :key="user.id">
+                    <td v-text="user.id"></td>
+                    <td v-text="user.username"></td>
+
+                    <td v-if="user.usersex=='man'">男</td>
+                    <td v-if="user.usersex=='woman'">女</td>
+
+                    <td v-text="user.usertel"></td>
+
+                    <td v-if="user.userstatus==null | user.userstatus==0">正常</td>
+                    <td v-if="user.userstatus==1" style="color: red;">封禁</td>
+                    <td>
+                        <a v-if="user.userstatus==null | user.userstatus==0" href="#" @click="fj(user.id)">封禁</a>
+                        <a v-if="user.userstatus==1" href="#" @click="unfj(user.id)">解封</a>
+                        <a href="#" @click="del(user.id)">删除</a>
+
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{'disabled':pageNum==1}">
+                    <a href="#" @click="findall(pageNum-1)" class="page-link">&laquo;</a>
+                </li>
+                <li class="page-item" v-for="indexPage in totalPage" :key="indexPage"
+                    :class="{'active':pageNum==indexPage}">
+                    <a href="#" @click="findall(indexPage)" class="page-link">{{indexPage}}</a>
+                </li>
+                <li class="page-item" :class="{'disabled':pageNum==totalPage}">
+                    <a href="#" @click="findall(pageNum+1)" class="page-link">&raquo;</a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            baseurl: "http://localhost:8080/movie/",
+            userList: [],
+            pageNum: 1,
+            pageSize: 2,
+            totalPage: 0,
+            totals: 0,
+
+            errmsg: "",
+
+        },
+        created() {
+            this.findall(this.pageNum)
+        },
+        methods: {
+            findall(indexPage) {
+                if (indexPage) {
+                    this.pageNum = indexPage
+                }
+                axios.get(this.baseurl + "user/findUserByPage?pageNum="
+                    + this.pageNum + "&pageSize=" + this.pageSize)
+                    .then((res) => {
+                        console.info(res.data);
+                        if (res.data.success) {
+                            this.errmsg = res.data.message;
+                            this.userList = res.data.data.userList
+                            this.pageNum = res.data.data.pageNum
+                            this.totals = res.data.data.totals
+                            this.totalPage = res.data.data.totalPage
+
+                        } else {
+                            this.errmsg = res.data.message;
+                        }
+                    })
+            },
+            fj(id){
+                console.log("封禁"+id);
+            },
+            unfj(id){
+                console.log("解封"+id);
+            },
+            del(id){
+                console.log("删除"+id);
+            }        
+        }
+    });
+
+</script>
+
+</html>

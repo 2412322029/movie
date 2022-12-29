@@ -82,46 +82,53 @@
     const app = new Vue({
         el: "#app",
         data: {
-            movieList: [],
-            hallList: [],
+            baseurl:"http://localhost:8080/movie/",
+            movieList: {},
+            hallList: {},
             plan: {},
             errMsg: "",
         },
         created() {
-            this.findall()
+            this.findAllMovie()
+            this.findAllHall()
         },
         mounted() {
 
         },
         methods: {
-            findall() {
-                axios.post("http://localhost:8080/movie/movie/findAll"
+            findAllMovie() {
+                axios.get(this.baseurl+"movie/findAllMovie"
                 ).then((res) => {
                     console.info(res.data);
                     if (res.data.success) {
-                        this.errMsg += "|" + res.data.message;
+                        this.errMsg += "-" + res.data.message;
                         this.movieList = res.data.data
+                        this.plan.movie_id = this.movieList[0].id
                     } else {
-                        this.errMsg += "|" + res.data.message;
+                        this.errMsg += "-" + res.data.message;
                     }
                 }
                 )
-                axios.post("http://localhost:8080/movie/hall/findHall"
+            },
+            findAllHall() {
+                axios.get(this.baseurl+"movie/findUsableHall"
                 ).then((res) => {
                     console.info(res.data);
                     if (res.data.success) {
-                        this.errMsg += "|" + res.data.message;
+                        this.errMsg += "-" + res.data.message;
                         this.hallList = res.data.data
+                        this.plan.hall_id = this.hallList[0].id
                     } else {
-                        this.errMsg += "|" + res.data.message;
+                        this.errMsg += "-" + res.data.message;
                     }
                 }
                 )
             },
             addPlan() {
-                if (this.plan.price!==undefined){
-                    axios.post("http://localhost:8080/movie/plan/addPlan"
-                    ,this.plan).then((res) => {
+                if (this.plan.price !== undefined & this.plan.playtime!==undefined) {
+                    console.log(this.plan);
+                    axios.post(this.baseurl+"plan/addPlan"
+                        , this.plan).then((res) => {
                             console.info(res.data);
                             if (res.data.success) {
                                 this.errMsg = res.data.message;
@@ -129,8 +136,8 @@
                                 this.errMsg = res.data.message;
                             }
                         }
-                    )
-                }else {
+                        )
+                } else {
                     alert("不能为空")
                 }
                 console.log(this.plan);

@@ -145,6 +145,7 @@
     const app = new Vue({
         el: "#app",
         data: {
+            baseurl:"http://localhost:8080/movie/",
             movie: {},
             imgUrl: ""
 
@@ -190,7 +191,7 @@
 
                 axios({
                     method:'post',
-                    url:"http://localhost:8080/movie/movie/addMovie",
+                    url:this.baseurl+"movie/addMovie",
                     data:formData,
                     headers:{
                         "Content-Type":"multipart/form-data"

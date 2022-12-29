@@ -81,6 +81,7 @@
 		const app = new Vue({
 			el: "#app",
 			data: {
+				baseurl:"http://localhost:8080/movie/",
 				hall: {},
 				errmsg: "",
 				rowCounter: [{}, {}]//行计数器
@@ -105,7 +106,7 @@
 
 					this.hall.seats= JSON.stringify(seats_arr)
 					if (this.hall.name !== "" && this.hall.name!=undefined) {
-						axios.post("http://localhost:8080/movie/hall/addHall"
+						axios.post(this.baseurl+"hall/addHall"
 							, this.hall).then((res) => {
 								console.info(res.data);
 								location.href="hallList.html"

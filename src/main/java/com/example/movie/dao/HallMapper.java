@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface HallMapper extends BaseMapper<Hall,Hall>{
 
+    Hall findOne(Integer hall_id);
 }

@@ -10,5 +10,7 @@ public interface UserService {
 
     Result<User> login(User user);
 
-    Result<List<User>> findAllUser();
+    List<User> findUserByPage(Integer pageNum, Integer pageSize);
+
+    Integer findTotals();
 }

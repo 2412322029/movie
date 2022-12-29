@@ -1,8 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.movie.dao.PlanMapper">
-    <insert id="save">
-        insert into tb_plan (id, playtime, price, seats, status, hall_id, movie_id)
-        VALUES (null,#{playtime},#{price},#{seats},#{status},#{hall_id},#{movie_id})
+    <insert id="save" parameterType="com.example.movie.pojo.Plan">
+        insert into tb_plan
+        VALUES (#{id},#{playtime},#{price},#{seats},0,#{hall_id},#{movie_id})
     </insert>
+    <select id="checkUsable" resultType="integer">
+        select count(*) from tb_plan
+        where hall_id = #{hid} and #{t} &gt;= tb_plan.playtime
+        and #{t} &gt;= date_add(playtime,interval 200 minute)
+    </select>
+
+    <select id="findByPage" resultType="com.example.movie.pojo.Plan">
+        select *
+        from tb_plan
+        order by id
+        limit #{start},#{rows}
+    </select>
+
+    <select id="findTotals" resultType="integer">
+        select count(*) from tb_plan
+    </select>
+    <select id="findById" resultType="com.example.movie.pojo.Plan" parameterType="java.lang.Integer">
+        select *
+        from tb_plan
+        where id=#{pid}
+    </select>
+    <select id="findPlanListByMovieId" resultType="com.example.movie.pojo.Plan"
+            parameterType="java.lang.Integer">
+        select * from tb_plan
+        where movie_id=#{mid} and playtime > now()
+    </select>
+
+    <select id="findOne" parameterType="integer" resultType="com.example.movie.pojo.Plan">
+        select * from tb_plan where id = #{id}
+    </select>
+
 </mapper>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <script src="../js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <script src="../js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h4>用户注册</h4>
+        <span style="color: red">
+            {{errmsg}}
+        </span>
+        <div class="row align-items-center">
+            <div class="col-sm"></div>
+            <div class="card col-sm mt-5">
+                <div class="card-body">
+                    <form action="" method="post">
+
+                        <label>
+                            账号
+                            <input class="form-control" type="text" name="username" v-model="user.username">
+                        </label>
+
+                        <label>
+                            <span class="label-text">密码</span>
+                            <input class="form-control" type="password" name="password" v-model="user.password">
+                        </label>
+                        <br>
+                        <label>
+                            <span class="label-text">真名</span>
+                            <input class="form-control" type="text" name="password" v-model="user.truename">
+                        </label>
+                        <br>
+                        <label>
+                            <span class="label-text">性别</span>
+                            <div style="display: inline-flex;">
+                                男
+                                <input class="form-control" type="radio" name="usersex" value="man"
+                                    v-model="user.usersex">
+                                女
+                                <input class="form-control" type="radio" name="usersex" value="woman"
+                                    v-model="user.usersex">
+                            </div>
+                        </label>
+                        <br>
+                        <label>
+                            <span class="label-text">电话</span>
+                            <input class="form-control" type="tel" name="tel" v-model="user.usertel">
+                        </label>
+
+                        <br>
+                        <button type="button" class="btn btn-success" @click="login">登录</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm"></div>
+        </div>
+
+    </div>
+
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                baseurl: "http://localhost:8080/movie/",
+                errmsg: "",
+                user: {
+                }
+            },
+            methods: {
+                login() {
+                    axios.post(this.baseurl + "user/register"
+                        , this.user).then((res) => {
+                            console.info(res.data);
+                            if (res.data.success) {
+                                alert(res.data.message + res.data.code)
+                                location.href = "userlogin.html"
+                            } else {
+                                this.errmsg = res.data.message + res.data.code
+                            }
+                        }
+                        )
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

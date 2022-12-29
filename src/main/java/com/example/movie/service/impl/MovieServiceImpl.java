@@ -1,6 +1,7 @@
 package com.example.movie.service.impl;
 
 import com.example.movie.dao.MovieMapper;
+import com.example.movie.pojo.Hall;
 import com.example.movie.pojo.Movie;
 import com.example.movie.pojo.Result;
 import com.example.movie.service.MovieService;
@@ -31,8 +32,30 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Result<List<Movie>> findAll() {
-        List<Movie> mList=movieMapper.findAll();
-        return Result.success("查询成功",mList);
+    public List<Movie> findByPage(Integer pageNum, Integer pageSize) {
+        int start = (pageNum - 1) * pageSize;
+        int rows = pageSize;
+        return movieMapper.findByPage(start, rows);
+    }
+
+    @Override
+    public Integer findTotals() {
+        return movieMapper.findTotals();
+
+    }
+
+    @Override
+    public List<Movie> findAllMovie() {
+        return movieMapper.findAll();
+    }
+
+    @Override
+    public List<Hall> findUsableHall() {
+        return movieMapper.findUsableHall();
+    }
+
+    @Override
+    public Movie findOne(Integer mid) {
+        return movieMapper.findOne(mid);
     }
 }

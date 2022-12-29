@@ -121,6 +121,7 @@
     const app = new Vue({
         el: "#app",
         data: {
+            baseurl:"http://localhost:8080/movie/",
             hallList: [],
             pageNum: 1,
             pageSize: 2,
@@ -150,7 +151,7 @@
                 var nn = this.nowlist
                 nn.seats = JSON.stringify(nn.seats)
 
-                axios.post("http://localhost:8080/movie/hall/update"
+                axios.post(baseur+"hall/update"
                     , nn).then((res) => {
                         console.info(res.data);
                         if (res.data.success) {
@@ -178,7 +179,7 @@
                 if (indexPage) {
                     this.pageNum = indexPage
                 }
-                axios.get("http://localhost:8080/movie/hall/findByPage?pageNum="
+                axios.get(this.baseurl+"hall/findByPage?pageNum="
                     + this.pageNum + "&pageSize=" + this.pageSize)
                     .then((res) => {
                         console.info(res.data);

@@ -15,7 +15,14 @@
     <select id="selectByName" resultType="com.example.movie.pojo.User" parameterType="java.lang.String">
         select * from tb_user where username=#{username}
     </select>
-    <select id="findAll" resultType="com.example.movie.pojo.User">
-        select * from tb_user
+    <select id="findByPage" resultType="com.example.movie.pojo.User">
+        select *
+        from tb_user
+        order by id
+        limit #{start},#{rows}
+    </select>
+
+    <select id="findTotals" resultType="integer">
+        select count(*) from tb_user
     </select>
 </mapper>

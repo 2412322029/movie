@@ -1,146 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
+
 <head>
     <meta charset="UTF-8">
-    <title>后台-主页面</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- 引入bootstrap、字体图标库 -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
-    <style type="text/css">
-        /*iframe的大小*/
-        #mainFrame{
-            width: 100%;
-            height: 100%;
-            min-height: 90vh;
-        }
-        #menu_demo{
-            margin-top: 30px;
-            border: none;
-            border-radius: 0;
-        }
-        #menu_demo .card{
-            border-radius: 0;
-        }
-        #menu_demo .card .card-header{
-            padding: 8px; /*内边距*/
-        }
-        #menu_demo .card .card-body{
-            padding: 0;
-        }
-        #menu_demo .card .card-body .list-group{
-            margin-bottom: 0;
-        }
-    </style>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <title>首页</title>
 </head>
-<body class="bg-light">
-    <!-- 头部信息 -->
-    <nav class="navbar navbar-light bg-primary">
-        <a class="navbar-brand" href="#">
-            Movie后台管理
-        </a>
-        <a class="navbar-brand" href="#">
-            安全退出
-        </a>
-    </nav>
-    <!-- 菜单和正文布局 -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-2">
-                <!-- 菜单 start -->
-                <div class="accordion" id="menu_demo">
-                    <div class="card">
-                        <div class="card-header" id="subMenu1">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-center"
-                                        type="button" data-toggle="collapse"
-                                        data-target="#adminManager" aria-expanded="true" aria-controls="adminManager">
-                                    用户管理
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="adminManager" class="collapse show" aria-labelledby="subMenu1" data-parent="#menu_demo">
-                            <div class="card-body">
-                                <ul class="list-group list-unstyled text-center">
-                                    <li class="list-group-item">
-                                        <a href="register.html" target="main">新增用户</a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a href="mod_login.html" target="main">用户列表</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="subMenu2">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-center collapsed"
-                                        type="button" data-toggle="collapse" data-target="#movieManager"
-                                        aria-expanded="false" aria-controls="movieManager">
-                                    影片管理
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="movieManager" class="collapse show" aria-labelledby="subMenu2" data-parent="#menu_demo">
-                            <div class="card-body">
-                                <ul class="list-group list-unstyled text-center">
-                                    <li class="list-group-item">
-                                        <a href="movie/addMovie.html" target="main">电影上线</a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a href="movie/movieList.html" target="main">电影列表</a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a href="movie/plan.html" target="main">电影排片</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="subMenu3">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-center collapsed"
-                                        type="button" data-toggle="collapse" data-target="#hallManager"
-                                        aria-expanded="false" aria-controls="hallManager">
-                                    影厅管理
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="hallManager" class="collapse show" aria-labelledby="subMenu3" data-parent="#menu_demo">
-                            <div class="card-body">
-                                <ul class="list-group list-unstyled text-center">
-                                    <li class="list-group-item">
-                                        <a href="hall/addHall.html" target="main">添加影厅</a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a href="hall/hallList.html" target="main">影厅列表</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 菜单 end -->
-            </div>
-            <div class="col-10">
-                <!-- 右侧正文 start -->
-                <!--将你要引入到iframe中的文件的信息和iframe之间建立连接,name给一个值和上面要引入的页面target相同-->
-                <iframe src="" name="main" id="mainFrame" frameborder="0">
-                </iframe>
-                <!-- 右侧正文 end -->
-            </div>
-        </div>
+
+<body>
+    <div id="app">
+        <h1>首页</h1>
+    <!-- 如果没有登录 -->
+    <a v-if="!islogin" href="./user/userlogin.html">登录</a>
+    <!-- 对应已经登录的 -->
+    <div v-if="islogin">
+        欢迎 {{username}}
     </div>
-    <script src="js/jquery-3.3.1.js"></script>
-    <script src="js/vue.js"></script>
-    <script src="js/axios.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap.bundle.js"></script>
-    </body>
+    <a href="./home/movieinfo.html">我的电影院</a>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            islogin: false,
+            username:"",
+
+        },
+        created() {
+            this.check()
+        },
+        methods: {
+            check() {
+                var u = this.getCookie("username")
+                var p = this.getCookie("password")
+                if (u != "" && u != undefined && p != "" && p != undefined) {
+                    this.islogin=true
+                    this.username = u
+                    this.password = p
+                    
+                }
+            },
+            getCookie(name) {
+                var strCookies = document.cookie;
+                var array = strCookies.split('; ');
+                for (var i = 0; i < array.length; i++) {
+                    var item = array[i].split("=");
+                    if (item[0] == name) {
+                        return item[1];
+                    }
+                }
+                return null;
+            }
+        }
+    })
+</script>
+
 </html>
-
-
-

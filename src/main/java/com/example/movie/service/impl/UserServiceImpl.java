@@ -46,7 +46,11 @@ public class UserServiceImpl implements UserService {
         } else {
             User u = userMapper.checkUser(user);
             if (u != null) {
-                return Result.success(u);
+                if (u.getUserstatus()==1){
+                    return Result.fail("账号被封禁，登录失败");
+                }else {
+                    return Result.success(u);
+                }
             } else {
                 return Result.fail("登录失败");
             }
@@ -56,8 +60,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<List<User>> findAllUser() {
-        List<User> uList= userMapper.findAll();
-        return Result.success("用户信息查询成功",uList);
+    public List<User> findUserByPage(Integer pageNum, Integer pageSize) {
+        int start = (pageNum - 1) * pageSize;
+        int rows = pageSize;
+        return userMapper.findByPage(start,rows);
+    }
+
+    @Override
+    public Integer findTotals() {
+        return userMapper.findTotals();
     }
 }
