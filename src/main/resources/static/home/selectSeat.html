@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>买票</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.css">
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <form action="" method="post">
+            <input type="hidden" id="p_id" v-model="plan.id">
+            <input type="hidden" id="p_price" v-model="plan.price">
+            <div class='topTitle'>
+                <div class="back" onclick="history.back()">
+                    <img src="../img/back.png" alt="">
+                </div>
+                电影选座购票
+            </div>
+            <div class="topInfo">
+                <ul class=" left list-unstyled">
+                    <li style="font-weight:bold;font-size:16px;" v-text="movie.name">
+                    </li>
+                    <li v-text="$options.filters.dateFilter(plan.playtime)"></li>
+                    <li v-text="$options.filters.timeFilter(plan.playtime)"></li>
+                </ul>
+                <span class="p_price">单价：￥ <span v-text="plan.price"></span></span>
+                <button id="btnSubmitTicker" type="button" class="btn btn-sm"
+                    style="background-color:#e54847;color:#FFFFFF">提交订单</button>
+            </div>
+        </form>
+        <div class="seats_info">
+            <div>
+                <img src="../img/wx.png" alt="">可选
+            </div>
+            <div>
+                <img src="../img/zx.png" alt="">已选
+            </div>
+            <div>
+                <img src="../img/yx.png" alt="">已售
+            </div>
+        </div>
+        <div class="h_name" v-text="hall.name">
+        </div>
+        <!--循环生成影厅的坐位 -->
+        <div class="content-seats-info">
+            <!--先获取一维数组-->
+            <div class="seats_row" v-for="(arr,i) in plan.seats" :key="i">
+                <div v-for="(t,j) in arr" :key="j" :data-status="plan.seats[i][j]" :class="`box${plan.seats[i][j]}`"
+                    :data-text="`第${i+1}排第${j+1}号`">
+                    <!--<span v-text="plan.seats[i][j]"></span>-->
+                </div>
+            </div>
+        </div>
+        <!-- 0 1 2 3
+        0 0 0 0 0 arr [0] [1] t
+        1 0 0 0 0-->
+    </div>
+</body>
+<style type="text/css">
+    body {
+        background-color: #f0efed !important;
+    }
+
+    .topTitle {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        background-color: #e54847;
+        height: 40px;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        position: relative;
+    }
+
+    .back {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        left: 5px;
+        cursor: pointer;
+    }
+
+    .back img {
+        width: 100%;
+    }
+
+    .topInfo {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 0 10px;
+        height: 45px;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .topInfo .left {
+        margin: 0px;
+    }
+
+    .seats_info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        height: 35px;
+        align-items: center;
+        border-bottom: 1px solid lightgray;
+        margin-top: 20px;
+    }
+
+    .seats_info>div>img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .h_name {
+        width: 200px;
+        height: 20px;
+        font-size: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        background-color: #e54847;
+        color: #FFFFFF;
+        margin: auto;
+        border-radius: 0 0 20px 20px;
+    }
+
+    /*坐位信息的样式*/
+    .content-seats-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .seats_row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .box0,
+    .box1,
+    .box2 {
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        margin: 1.5px;
+    }
+
+    .box0 {
+        background-image: url(../img/wx.png);
+    }
+
+    .box1 {
+        background-image: url(../img/yx.png);
+    }
+
+    .box2 {
+        background-image: url(../img/zx.png);
+    }
+
+    .p_price {
+        font-size: 18px;
+        color: orange;
+    }
+</style>
+<script type="text/javascript">
+    Vue.filter('dateFilter', function (value) {
+        if (value != null) {
+            var arr = value.split("T");
+            if (arr != null && arr.length >= 1) {
+                return arr[0];
+            }
+        } else {
+            return value;
+        }
+    })
+    Vue.filter('timeFilter', function (value) {
+        if (value != null) {
+            var arr = value.split("T");
+            if (arr != null && arr.length >= 2) {
+                return arr[1].substring(0, arr[1].lastIndexOf("."));
+            }
+        } else {
+            return value;
+        }
+    })
+    const app = new Vue({
+        el: "#app", // element 用来给 Vue 实例定义一个作用范围
+        data: {
+            baseurl: 'http://localhost:8080/movie/',
+            plan: {},
+            movie: {},
+            hall: {},
+            planId: 0
+        },
+        methods: {
+            findInfo(pid) {
+                console.info("pid=" + pid);
+                //查询数据
+                axios.get(this.baseurl+"plan/findPlanByPlanId?id=" + pid,)
+                    .then((res) => {
+                        console.info(res.data);
+                        this.plan = res.data.plan;
+                        this.movie = res.data.movie;
+                        this.hall = res.data.hall;
+                        this.plan.seats = JSON.parse(this.plan.seats);
+                        // JSON.parse将字符串，转换成对象
+                        // 将字符串格式的二维数组转换成对象
+                    });
+            }
+        },
+        created() {
+            //截取当前请求路径获取当前排影的id
+            let pid = location.href.substring(location.href.indexOf("=") + 1);
+            this.planId = pid;
+            this.findInfo(pid);
+        }
+    });
+    $(function () {
+        $(".content-seats-info").on("click", ".box0", function () {
+            $(this).removeClass("box0").addClass("box2");
+            $(this).attr("data-status", "1");
+        });
+        $(".content-seats-info").on("click", ".box2", function () {
+            $(this).removeClass("box2").addClass("box0");
+            $(this).attr("data-status", "0");
+        });
+        $("#btnSubmitTicker").click(function () {
+            //第一步：获取坐位的信息
+            var arr = []; //用于保存我的座位信息
+            $(".content-seats-info>.seats_row").each(function (index, ele) {
+                //这个代表所有的行 所有的行又是一个数组
+                var rowArr = [];
+                $(this).children().each(function (index, ele) {
+                    rowArr.push(parseInt($(this).data("status")));
+                });
+                arr.push(rowArr);
+            });
+            //第二步：获取坐位的详细信息
+            var seats_info_Arr = []; //坐位的详细信息
+            $(".content-seats-info .box2").each(function (index, ele) {
+                seats_info_Arr.push($(this).data("text"));
+            });
+            //Ajax 的 Post请求向后台提交数据
+            $.post("http://localhost:8080/order/addOrder", {
+                plan_id: $("#p_id").val(),
+                price: parseFloat($("#p_price").val()) * seats_info_Arr.length,
+                seat: JSON.stringify(arr),
+                seat_info: seats_info_Arr.toString()
+            }, function (data) {
+                if (data.success) {
+                    console.info("提交成功");
+                }
+                else {
+                    console.info(data.message);
+                }
+            });
+        });
+    });
+</script>
+
+</html>

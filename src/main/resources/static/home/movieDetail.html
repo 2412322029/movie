@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影详情</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.css">
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class='topTitle'>
+            <div class="back" onclick="history.back()">
+                <img src="../img/back.png" alt="">
+            </div>
+            <span v-text="movie.name"></span>
+        </div>
+        <div class="movieItemDetail">
+            <div class='mask'>
+                <img :src="baseurl+movie.img" alt="">
+            </div>
+            <div class='left'>
+                <img :src="baseurl+movie.img" alt="">
+            </div>
+            <div class='center'>
+                <div class='m_title' v-text="movie.name"></div>
+                <div class='m_type' v-text="movie.type"></div>
+                <div class='m_rating'>评分：<span v-text="movie.grade"></span></div>
+                <div class='m_src' v-text="movie.length"></div>
+                <div class='m_rt' v-text="$options.filters.dateFilter(movie.showtime)"></div>
+            </div>
+        </div>
+        <div class='section-expander'>
+            <div class='m_desc' v-text="movie.description"></div>
+        </div>
+        <!--排片信息-->
+        <div class=" container">
+            <div class="h5">
+                播放信息
+            </div>
+            <div class="row playInfoItem" v-for="(plan,index) in planList">
+                <div class="p_showtime">
+                    <div style="font-weight:bold" v-text="$options.filters.timeFilter(plan.playtime)"><!--显示
+        时间--></div>
+                    <div v-text="$options.filters.dateFilter(plan.playtime)"><!--显示
+        日期--></div>
+                </div>
+
+                <div class="p_price"> <span v-text="plan.price"></span> 元 </div>
+                <div class="buyBtn">
+                    <button type="button" class="btn btn-xs btn-buyticker" style="background-color:#e54847;color:white"
+                        :data-p_id="plan.id" @click="selectSeat(plan.id)">选座
+                        购票</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    //格式化日期
+    Vue.filter('dateFilter', function (value) {
+        if (value != null) {
+            var arr = value.split("T");
+            if (arr != null && arr.length >= 1) {
+                return arr[0];
+            }
+        } else {
+            return value;
+        }
+    })
+    //格式化时间
+    Vue.filter('timeFilter', function (value) {
+        if (value != null) {
+            var arr = value.split("T");
+            if (arr != null && arr.length >= 2) {
+                return arr[1].substring(0, arr[1].lastIndexOf("."));
+            }
+        } else {
+            return value;
+        }
+    })
+    const app = new Vue({
+        el: "#app", // element 用来给 Vue 实例定义一个作用范围
+        data: {
+            baseurl: 'http://localhost:8080/movie/',
+            movie: {},
+            movieId: 0,
+            planList: []
+        },
+        methods: {
+            showMovieInfo(mid) {
+                //就需要去MovieController中创建一个方法findMovieById
+                axios.get(this.baseurl + "movie/findMovieByPid?id=" + mid,)
+                    .then((res) => {
+                        this.movie = res.data.data;
+                    });
+
+            },
+            findPlanListByMovieId(mid) {
+                axios.get(this.baseurl + "plan/findPlanListByMovieId?id=" + mid,)
+                    .then((res) => {
+                        this.planList = res.data.data;
+                    });
+            },
+            selectSeat(pid) {
+                //alert(pid);
+                //跳转到选座位的地方
+                location.href = "selectSeat.html?pid=" + pid;
+            }
+        },
+        created() {
+            // http://localhost:8080/home/movieDetail.html?mid=3
+            let mid = location.href.substring(location.href.indexOf("=") + 1);
+            this.movieId = mid;
+            this.showMovieInfo(mid); //根据电影ID，查询电影信息
+            this.findPlanListByMovieId(mid); //根据电影ID,查询此电影排片信息
+        }
+    });
+</script>
+
+<style type="text/css">
+    .topTitle {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        background-color: #e54847;
+        height: 40px;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        position: relative;
+    }
+
+    .back {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        left: 5px;
+        cursor: pointer;
+    }
+
+    .back img {
+        width: 100%;
+    }
+
+    .movieItemDetail {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        box-sizing: border-box;
+        padding: 7px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: rgba(0, 0, 0, 0.2);
+        position: relative;
+        color: white;
+        margin: 0;
+    }
+
+    .movieItemDetail .mask {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .mask img {
+        width: 100%;
+        height: 100%;
+        filter: blur(15px);
+        -webkit-filter: blur(15px);
+    }
+
+    .movieItemDetail .left {
+        width: 110px;
+        margin-right: 8px;
+    }
+
+    .movieItemDetail .left>img {
+        width: 100%;
+        height: auto;
+    }
+
+    .movieItemDetail .center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin: 5px;
+        font-size: 13px;
+    }
+
+    .m_rating {
+        color: orange;
+    }
+
+    .section-expander {
+        padding: 7px;
+        box-sizing: border-box;
+    }
+
+    .buttondiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        background-color: #e54847;
+        color: white;
+        font-size: 15px;
+        margin: auto;
+        padding: 7px;
+        border-radius: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .buttonViewHover {
+        font-weight: bold;
+    }
+
+    .m_desc {
+        font-size: 14px;
+        color: gray;
+        text-indent: 2em;
+    }
+
+    .m_title {
+        font-size: 18px;
+    }
+
+    .playInfoItem {
+        display: flex;
+        align-items: center;
+        border: 1px solid lightgray;
+        margin-bottom: 3px;
+        font-size: 14px;
+        padding: 5px 0;
+    }
+
+    .playInfoItem>div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .p_showtime js部分 {
+        width: 80px;
+        flex-direction: column !important;
+    }
+
+    .p_price {
+        flex: 1;
+    }
+
+    @media only screen and (max-width:375px) {
+        .playInfoItem {
+            font-size: 12px;
+        }
+    }
+</style>
+
+</html>
