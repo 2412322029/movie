@@ -64,9 +64,11 @@
             check() {
                 var u = this.getCookie("username")
                 var p = this.getCookie("password")
-                if (u != "" && u != null && p != "" && p != null) {
+                var uid = this.getCookie("uid")
+                if (u != "" && u != null && p != "" && p != null&& uid != "" && uid != null) {
                     this.user.username = u
                     this.user.password = p
+                    this.user.uid = uid
                     this.login()
                 }
             },
@@ -75,8 +77,11 @@
                     , this.user).then((res) => {
                         console.info(res.data);
                         if (res.data.success) {
+                            this.user=res.data.data
+                            this.addCookie("uid", this.user.id)
                             this.addCookie("username", this.user.username)
                             this.addCookie("password", this.user.password)
+                            console.log(this.user);
                             alert(res.data.message + res.data.code)
                             location.href = "/"
                         } else {

@@ -14,4 +14,6 @@ public interface PlanService{
     Integer findTotals();
 
     List<Plan> findPlanListByMovieId(Integer id);
+
+    Result<Plan> updateSeats(String seats,String pid);
 }

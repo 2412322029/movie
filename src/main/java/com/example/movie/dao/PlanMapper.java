@@ -15,4 +15,6 @@ public interface PlanMapper extends BaseMapper<Plan,Integer>{
     Plan findById(Integer pid);
 
     List<Plan> findPlanListByMovieId(@Param("mid") Integer mid);
+
+    Integer updateSeats(String seats,String pid);
 }

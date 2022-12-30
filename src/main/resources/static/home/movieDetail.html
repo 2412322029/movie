@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
     <meta charset="UTF-8">
@@ -19,16 +19,16 @@
     <div id="app">
         <div class='topTitle'>
             <div class="back" onclick="history.back()">
-                <img src="../img/back.png" alt="">
+                <i class="fa fa-angle-left" style="margin-left: 10px;"></i>
             </div>
             <span v-text="movie.name"></span>
         </div>
         <div class="movieItemDetail">
             <div class='mask'>
-                <img :src="baseurl+movie.img" alt="">
+                <img onerror="javascript:this.src='../img/404.png'" :src="'../'+movie.img" alt="">
             </div>
             <div class='left'>
-                <img :src="baseurl+movie.img" alt="">
+                <img onerror="javascript:this.src='../img/404.png'" :src="'../'+movie.img" alt="">
             </div>
             <div class='center'>
                 <div class='m_title' v-text="movie.name"></div>
@@ -46,7 +46,9 @@
             <div class="h5">
                 播放信息
             </div>
+            <span v-if="planList===[]">暂无排片</span>
             <div class="row playInfoItem" v-for="(plan,index) in planList">
+
                 <div class="p_showtime">
                     <div style="font-weight:bold" v-text="$options.filters.timeFilter(plan.playtime)"><!--显示
         时间--></div>
@@ -56,15 +58,55 @@
 
                 <div class="p_price"> <span v-text="plan.price"></span> 元 </div>
                 <div class="buyBtn">
-                    <button type="button" class="btn btn-xs btn-buyticker" style="background-color:#e54847;color:white"
+                    <button type="button" class="btn btn-xs btn-buyticker" style="background-color:#007bff;color:white"
                         :data-p_id="plan.id" @click="selectSeat(plan.id)">选座
                         购票</button>
                 </div>
             </div>
         </div>
+        <div v-for="i in 30" :id="'c-'+i" class="com">
+            <!-- 单个评论 -->
+             <div  style="height: 100px; display: block;"> 评论-{{i}}</div>
+        </div>
     </div>
 </body>
+<style>
+    .com{
+        height: 100px;
+        display: block;
+    }
+</style>
 <script>
+    function GetRequest() {
+        var str = location.href
+        var num = str.indexOf("#");
+        str = str.substr(num + 1);
+        return str;
+    }
+    function scrollToElement(elementId, speed) {
+        let destEle = document.getElementById(elementId);
+        console.log($("#"+elementId));
+        $("#"+elementId).css("box-shadow","inset  0 0 5px 5px #878686") 
+        setTimeout(() => {
+            $("#"+elementId).css("box-shadow","") 
+        }, 3000);
+        let scrolltopTemp = document.documentElement.scrollTop || document.body.scrollTop;
+        let rect = destEle.getBoundingClientRect();
+        let top = scrolltopTemp + rect.top;
+        let currentTop = 0;
+        let requestId;
+        function step() {
+            currentTop += speed;
+            if (currentTop <= top) {
+                document.body.scrollTo(10, currentTop);
+                requestId = window.requestAnimationFrame(step);
+            } else {
+                window.cancelAnimationFrame(requestId);
+            }
+        }
+        window.requestAnimationFrame(step);
+    }
+
     //格式化日期
     Vue.filter('dateFilter', function (value) {
         if (value != null) {
@@ -117,11 +159,17 @@
             }
         },
         created() {
-            // http://localhost:8080/home/movieDetail.html?mid=3
             let mid = location.href.substring(location.href.indexOf("=") + 1);
             this.movieId = mid;
             this.showMovieInfo(mid); //根据电影ID，查询电影信息
             this.findPlanListByMovieId(mid); //根据电影ID,查询此电影排片信息
+        },
+        mounted() {
+            var a=GetRequest()
+            if(a.indexOf("c-")==0){
+                scrollToElement(a,3)
+            }
+            
         }
     });
 </script>
@@ -131,7 +179,7 @@
         width: 100%;
         display: flex;
         flex-direction: row;
-        background-color: #e54847;
+        background-color: #007bff;
         height: 40px;
         justify-content: center;
         align-items: center;
@@ -216,7 +264,7 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        background-color: #e54847;
+        background-color: #007bff;
         color: white;
         font-size: 15px;
         margin: auto;

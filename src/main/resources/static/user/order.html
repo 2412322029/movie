@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单信息</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.css">
+    <script src="../js/jquery-3.3.1.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</head>
+<style>
+    * {
+        margin: 0px;
+        /*外边距，去除所有的外边距*/
+        padding: 0px;
+        /*内边距，去除所有的内边距*/
+        list-style-type: none;
+        /*列表没有样式*/
+        font-family: "microsoft yahei";
+        /*雅黑字体*/
+    }
+
+    .header {
+        top: 0;
+        position: fixed;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 40px;
+        background-color: #007bff;
+        color: #FFFFFF;
+        font-size: 18px;
+        z-index: 100;
+    }
+
+    .home {
+        position: absolute;
+        left: 5px;
+        cursor: pointer;
+
+    }
+
+    .card {
+        margin: 10px;
+        min-height: 20vh;
+    }
+    .container{
+        margin-top:47px ;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="home" onclick="location.href='/'">
+                <i class="fa fa-home" style="margin-left: 10px;"></i>
+            </div>
+            {{username}}的订单
+        </header>
+        <div class="container">
+            <div v-for="i,index in order">
+                <div class="card bg-light shadow-sm rounded p-2" :data-id="i.id" :data-planid="i.plan_id">
+                    <div id="info" style="max-width: 50%;">
+                        <p>{{oseat[index].length}}个座位</p>
+                        <div v-for="j in oseat[index]" class="float-left w-2">
+                            <p>{{j}}</p>
+                        </div>
+                    </div>
+                    <a :href="'../home/selectSeat.html?pid='+i.plan_id">场次详情</a>
+                    <!-- <h3 class="text-warning">{{i.price}} x {{oseat[index].length}} = ￥{{i.price*oseat[index].length}}
+                </h3> -->
+                    <button type="button" @click="sub(i.id)" class="btn btn-primary">
+                        结账: <i class="text-warning">￥{{i.price}} x {{oseat[index].length}} =
+                            ￥{{i.price*oseat[index].length}}
+                        </i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el: "#app", // element 用来给 Vue 实例定义一个作用范围
+        data: {
+            baseurl: 'http://localhost:8080/movie/',
+            order: {},
+            uid: null,
+            username: "",
+            oseat: [],
+        },
+        methods: {
+            sub(id) {
+                alert("订单id=" + id + "\n" + "用户id=" + this.uid)
+            },
+            gologin() {
+                alert("请登录")
+                location.href = "../user/userlogin.html"
+            },
+            getCookie(name) {
+                var strCookies = document.cookie;
+                var array = strCookies.split('; ');
+                for (var i = 0; i < array.length; i++) {
+                    var item = array[i].split("=");
+                    if (item[0] == name) {
+                        return item[1];
+                    }
+                }
+                return null;
+            },
+            getorder() {
+                axios.post(this.baseurl + "order/findOrderByUserId?uid="
+                    + this.uid).then((res) => {
+                        console.info(res.data);
+                        if (res.data.success) {
+                            this.order = res.data.data
+                            this.order.forEach((c, i) => {
+                                this.order[i].seat = eval(this.order[i].seat)
+                                var o = []
+                                this.order[i].seat.forEach(el => {
+                                    var x = Number(el[0]) + 1
+                                    var y = Number(el[1]) + 1
+                                    o.push("第" + x + "排" + ",第" + y + "列")
+                                });
+                                this.oseat.push(o)
+                            })
+                            console.log(this.oseat);
+                        } else {
+                            alert(res.data.message)
+                        }
+                    }
+                    )
+            }
+        },
+        created() {
+            this.uid = this.getCookie("uid")
+            if (this.uid != null) {
+                this.username = this.getCookie("username")
+                this.getorder()
+            } else {
+                this.gologin()
+            }
+        },
+
+    });
+</script>
+
+</html>

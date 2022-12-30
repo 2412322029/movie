@@ -25,4 +25,9 @@
     <select id="findTotals" resultType="integer">
         select count(*) from tb_user
     </select>
+
+    <select id="findOne" parameterType="integer" resultType="com.example.movie.pojo.User">
+        select * from tb_user where id = #{id}
+    </select>
+
 </mapper>

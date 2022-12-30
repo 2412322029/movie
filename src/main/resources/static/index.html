@@ -12,17 +12,70 @@
     <script src="/js/axios.min.js"></script>
     <title>首页</title>
 </head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        list-style-type: none;
+        font-family: "microsoft yahei";
+    }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 40px;
+        background-color: #007bff;
+        color: #FFFFFF;
+        font-size: 18px;
+        position: relative;
+    }
+
+    #right {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+    }
+
+    a {
+        color: wheat;
+    }
+
+    .card {
+        margin: 10px;
+        height: 20vh;
+        cursor: pointer;
+    }
+</style>
 
 <body>
     <div id="app">
-        <h1>首页</h1>
-    <!-- 如果没有登录 -->
-    <a v-if="!islogin" href="./user/userlogin.html">登录</a>
-    <!-- 对应已经登录的 -->
-    <div v-if="islogin">
-        欢迎 {{username}}
-    </div>
-    <a href="./home/movieinfo.html">我的电影院</a>
+
+        <header class="header">
+            <div class="home" onclick="location.href='/'">
+                <i class="fa fa-home" style="margin-left: 10px;"></i>
+            </div>
+            我的影院
+            <div id="right">
+                <!-- 如果没有登录 -->
+                <a v-if="!islogin" href="./user/userlogin.html">登录</a>
+                <!-- 对应已经登录的 -->
+                <div v-if="islogin">
+                    {{username}}
+                    <button type="button" @click="unlogin" class="btn">注销</button>
+                </div>
+            </div>
+
+        </header>
+
+        <div class="card bg-light shadow-sm rounded"  onclick="javascrip:location.href='./home/movieinfo.html'">
+            <h1 class="text-center mt-4 card-title"> 最近热播</h1>
+        </div>
+        <div v-if="islogin" class="card bg-light shadow-sm rounded" onclick="javascrip:location.href='./user/order.html'">
+            <h1 class="text-center mt-4"> 我的订单</h1>
+        </div>
     </div>
 </body>
 <script>
@@ -30,7 +83,7 @@
         el: "#app",
         data: {
             islogin: false,
-            username:"",
+            username: "",
 
         },
         created() {
@@ -41,11 +94,16 @@
                 var u = this.getCookie("username")
                 var p = this.getCookie("password")
                 if (u != "" && u != undefined && p != "" && p != undefined) {
-                    this.islogin=true
+                    this.islogin = true
                     this.username = u
                     this.password = p
-                    
+
                 }
+            },
+            unlogin() {
+                this.delCoolie()
+                this.islogin = false
+                this.username = ""
             },
             getCookie(name) {
                 var strCookies = document.cookie;
@@ -57,7 +115,17 @@
                     }
                 }
                 return null;
-            }
+            },
+            addCookie(name, value) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() + 3 * 24 * 60 * 60 * 1000);//3天
+                document.cookie = name + "=" + value + ";expires=" + exp.toGMTString() + ";path=/";
+            },
+            delCoolie() {
+                document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "password=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "uid=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            },
         }
     })
 </script>

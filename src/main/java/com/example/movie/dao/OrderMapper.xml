@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.movie.dao.OrderMapper">
+    <insert id="save" parameterType="com.example.movie.pojo.Order">
+        insert into tb_order values
+        (null,0,#{price},#{user_id},#{plan_id},#{seat})
+    </insert>
+    <select id="findOrderByUserId" resultType="com.example.movie.pojo.Order" parameterType="java.lang.Integer">
+        select * from tb_order where user_id=#{uid}
+    </select>
+
+</mapper>

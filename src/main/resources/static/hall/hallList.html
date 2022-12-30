@@ -46,8 +46,8 @@
                             第{{index1+1}}排:
                             <span v-for="x in j">
                                 <span style=" width: 25px;height: 28px;display: inline-block" class="ml-2">
-                                    <span v-if="x==0" class="badge badge-success">空</span>
-                                    <span v-if="x==1" class="badge badge-danger">满</span>
+                                    <span class="badge badge-success">&nbsp;</span>
+                            
                                 </span>
 
                             </span>
@@ -72,20 +72,7 @@
                     <input class="form-control" type="text" v-model="nowlist.name">
                 </h5>
                 <p class="card-text">
-                <div v-for="j,index1 in nowlist.seats" class="border m-2 p-2 border-info rounded">
-                    第{{index1+1}}排:
-                    <span v-for="x,index2 in j" style="cursor: pointer;">
-                        <span style=" width: 25px;height: 28px;display: inline-block" class="ml-2">
-                            <span v-if="x==0" @click="togo(nowlist.id,index1,index2,nownum)"
-                                class="badge badge-success">空
-                            </span>
-                            <span v-if="x==1" @click="togo(nowlist.id,index1,index2,nownum)"
-                                class="badge badge-danger">满
-                            </span>
-                        </span>
 
-                    </span>
-                </div>
                 </p>
                 <a href="#" class="btn btn-danger" @click="open=false">关闭</a>
                 <a href="#" class="btn btn-primary" @click="updata">提交</a>
@@ -148,20 +135,6 @@
             updata() {
                 console.log("updata", this.nowlist);
                 this.open = false
-                var nn = this.nowlist
-                nn.seats = JSON.stringify(nn.seats)
-
-                axios.post(baseur+"hall/update"
-                    , nn).then((res) => {
-                        console.info(res.data);
-                        if (res.data.success) {
-                            alert(this.errmsg)
-                            location.reload()
-                        } else {
-                            alert(this.errmsg)
-                        }
-                    })
-               
             },
             change(inx) {
                 this.open = true

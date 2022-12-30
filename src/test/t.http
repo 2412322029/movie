@@ -61,3 +61,12 @@ Content-Type: application/json
 {
   "id":16
 }
+
+###aa
+POST http://localhost:8080/movie/plan/updateSeats
+Content-Type: application/json
+
+{
+"pid": "23",
+"seats": "[[0,0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]"
+}

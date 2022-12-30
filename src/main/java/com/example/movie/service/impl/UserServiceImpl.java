@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -46,6 +47,9 @@ public class UserServiceImpl implements UserService {
         } else {
             User u = userMapper.checkUser(user);
             if (u != null) {
+                if(u.getUserstatus()==null){
+                    u.setUserstatus(0);
+                };
                 if (u.getUserstatus()==1){
                     return Result.fail("账号被封禁，登录失败");
                 }else {
@@ -69,5 +73,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer findTotals() {
         return userMapper.findTotals();
+    }
+
+    @Override
+    public Result<User> findOne(Integer uid) {
+        User user= userMapper.findOne(uid);
+        if (Objects.nonNull(user)){
+            return Result.success("查询用户成功",user);
+        }else {
+            return Result.fail("uid不存在");
+        }
     }
 }

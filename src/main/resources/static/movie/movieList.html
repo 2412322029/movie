@@ -29,7 +29,7 @@
         <div class="d-flex justify-content-around">
             <div v-for="i in movieList" class="card col-5 border border-info rounded ">
                 <h4 class="card-title">{{i.name}}</h4>
-                <img class="card-img-top"  v-if="inc(i.img)" :src="baseurl+i.img" alt="">
+                <img class="card-img-top"  v-if="inc(i.img)" :src="'../'+i.img" alt="">
                 
                 <div class="card-body">
                     <p>

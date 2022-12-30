@@ -67,5 +67,15 @@ public class PlanServiceImpl implements PlanService {
         return planMapper.findPlanListByMovieId(id);
     }
 
+    @Override
+    public Result<Plan> updateSeats(String seats, String pid) {
+        int n = planMapper.updateSeats(seats,pid);
+        if (n>0){
+            return Result.success("更新座位成功",null);
+        }else {
+            return Result.fail("更新座位失败");
+        }
+    }
+
 
 }

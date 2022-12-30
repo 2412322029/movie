@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
             <input type="hidden" id="p_price" v-model="plan.price">
             <div class='topTitle'>
                 <div class="back" onclick="history.back()">
-                    <img src="../img/back.png" alt="">
+                    <i class="fa fa-angle-left" style="margin-left: 10px;"></i>
                 </div>
                 电影选座购票
             </div>
@@ -34,36 +34,64 @@
                     <li v-text="$options.filters.timeFilter(plan.playtime)"></li>
                 </ul>
                 <span class="p_price">单价：￥ <span v-text="plan.price"></span></span>
-                <button id="btnSubmitTicker" type="button" class="btn btn-sm"
-                    style="background-color:#e54847;color:#FFFFFF">提交订单</button>
+                <button id="btnSubmitTicker" v-if="count>0" type="button" class="btn btn-sm" @click="sub"
+                    style="background-color:#007bff;color:#FFFFFF">
+                    <span>￥ {{count*plan.price}}元</span>
+                    提交订单</button>
+                <button v-else-if="usable>0" type="button" class="btn btn-sm"
+                    style="background-color:#959090;color:#FFFFFF ;cursor:default">余票{{usable}}张</button>
+                <button v-else type="button" class="btn btn-sm"
+                    style="background-color:#787826;color:#FFFFFF ;cursor:default">已售罄</button>
             </div>
         </form>
         <div class="seats_info">
             <div>
-                <img src="../img/wx.png" alt="">可选
+                <!-- <img src="../img/wx.png" alt=""> -->
+                <span class="badge badge-success">
+                    <i class="fa fa-square-o"></i>
+                </span>
+                可选
             </div>
             <div>
-                <img src="../img/zx.png" alt="">已选
+                <!-- <img src="../img/zx.png" alt=""> -->
+                <span class="badge badge-warning">
+                    <i class="fa fa-check-square-o"></i>
+                </span>
+                已选
             </div>
             <div>
-                <img src="../img/yx.png" alt="">已售
+                <!-- <img src="../img/yx.png" alt=""> -->
+                <span class="badge badge-danger">
+                    <i class="fa fa-check-square"></i>
+                </span>
+                已售
             </div>
         </div>
         <div class="h_name" v-text="hall.name">
         </div>
-        <!--循环生成影厅的坐位 -->
-        <div class="content-seats-info">
-            <!--先获取一维数组-->
-            <div class="seats_row" v-for="(arr,i) in plan.seats" :key="i">
-                <div v-for="(t,j) in arr" :key="j" :data-status="plan.seats[i][j]" :class="`box${plan.seats[i][j]}`"
-                    :data-text="`第${i+1}排第${j+1}号`">
-                    <!--<span v-text="plan.seats[i][j]"></span>-->
-                </div>
+        <div class="d-flex justify-content-center" style="flex-direction: column;align-items: center;">
+            <div v-for="j,index1 in plan.seats" class=" m-2 p-2 rounded ">
+                <span v-for="x,index2 in j">
+                    <span style=" width: 25px;height: 28px;display: inline-block;" class="ml-2" :data-x="index1"
+                        :data-y="index2">
+                        <span style="cursor: pointer;" v-if="x==0" @click="togo(plan.id,index1,index2)"
+                            class="badge badge-success">
+                            <i class="fa fa-square-o"></i>
+                        </span>
+                        <span style="cursor: pointer;" v-if="x==-1" @click="togo(plan.id,index1,index2)"
+                            class="badge badge-warning">
+                            <i class="fa fa-check-square-o"></i>
+                        </span>
+                        <span v-if="x==1" class="badge badge-danger">
+                            <i class="fa fa-check-square"></i>
+                        </span>
+                    </span>
+
+                </span>
             </div>
         </div>
-        <!-- 0 1 2 3
-        0 0 0 0 0 arr [0] [1] t
-        1 0 0 0 0-->
+
+
     </div>
 </body>
 <style type="text/css">
@@ -75,7 +103,7 @@
         width: 100%;
         display: flex;
         flex-direction: row;
-        background-color: #e54847;
+        background-color: #007bff;
         height: 40px;
         justify-content: center;
         align-items: center;
@@ -134,7 +162,7 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        background-color: #e54847;
+        background-color: #007bff;
         color: #FFFFFF;
         margin: auto;
         border-radius: 0 0 20px 20px;
@@ -206,13 +234,130 @@
             plan: {},
             movie: {},
             hall: {},
-            planId: 0
+            planId: 0,
+            count: 0,
+            usable: 0,
+            user: {},
+
+            order: {},
+
+            params: {},
         },
         methods: {
+            getCookie(name) {
+                var strCookies = document.cookie;
+                var array = strCookies.split('; ');
+                for (var i = 0; i < array.length; i++) {
+                    var item = array[i].split("=");
+                    if (item[0] == name) {
+                        return item[1];
+                    }
+                }
+                return null;
+            },
+            gologin() {
+                alert("请登录")
+                location.href = "../user/userlogin.html"
+            },
+            sub() {
+                if (this.check()) {
+                    console.log("用户: uid=" + this.user.uid + ";name=" + this.user.username);
+                    var c_arr = []//买票的坐标
+                    this.plan.seats.forEach((el, i) => {
+                        el.forEach((e, j) => {
+                            if (e == -1) {
+                                c_arr.push([i, j])
+                            }
+                        })
+                    });
+                    console.log("买票的坐标", c_arr);
+                    this.plan.seats.forEach((el, i) => {
+                        el.forEach((e, j) => {
+                            if (e == -1) {
+                                this.plan.seats[i][j] = 1
+                            }
+                        })
+                    });
+                    console.log("购票后座位：", JSON.stringify(this.plan.seats));
+                    console.log("价格：", this.plan.price + "*" + this.count + "元");
+
+                    //填写order信息
+                    this.order.price = this.plan.price
+                    this.order.user_id = +this.user.uid
+                    this.order.plan_id = this.planId
+                    this.order.seat = JSON.stringify(c_arr)
+                    console.log(this.order);
+                    //修改座位信息
+                    //plan/updateSeats
+
+                    this.params.pid = this.order.plan_id
+                    this.params.seats = JSON.stringify(this.plan.seats)
+                    console.log(this.params);
+                    axios.post(this.baseurl + "plan/updateSeats"
+                        , this.params).then((res) => {
+                            console.info(res.data);
+                            if (res.data.success) {
+                            } else {
+                                alert(res.data.message);
+                            }
+                        })
+                    //添加订单
+                    axios.post(this.baseurl + "order/addOrder"
+                        , this.order).then((res) => {
+                            console.info(res.data);
+                            if (res.data.success) {
+                            } else {
+                                alert(res.data.message);
+                            }
+                        })
+
+                    alert("已购买 " + c_arr + "\n" + this.plan.price + "*" + this.count + "元")
+                    //恢复
+                    this.count = 0
+                    this.usable = this.usable - c_arr.length
+                    this.$forceUpdate()
+                } else {
+                    this.gologin()
+                }
+            },
+            togo(id, index1, index2,) {
+                if (this.check()) {
+                    var a = this.plan.seats[index1][index2]
+                    this.plan.seats[index1][index2] = a == 0 ? -1 : 0
+                    this.$forceUpdate()
+                    console.log(a == 0 ? "点击" : "取消点击", ": pid=" + id, "位置：(" + index1 + "," + index2 + ")");
+                    var c = 0
+                    this.plan.seats.forEach(el => {
+                        el.forEach(e => {
+                            if (e == -1) {
+                                c++
+                            }
+                        })
+                    });
+                    this.count = c
+                } else {
+                    this.gologin()
+                }
+
+            },
+            check() {
+                var u = this.getCookie("username")
+                var p = this.getCookie("password")
+                var uid = this.getCookie("uid")
+                if (u != "" && u != null && p != "" && p != null && uid != "" && uid != null) {
+                    this.user.username = u
+                    this.user.password = p
+                    this.user.uid = uid
+                    return true
+
+                } else {
+                    return false
+                }
+            },
             findInfo(pid) {
                 console.info("pid=" + pid);
                 //查询数据
-                axios.get(this.baseurl+"plan/findPlanByPlanId?id=" + pid,)
+                axios.get(this.baseurl + "plan/findPlanByPlanId?id=" + pid,)
                     .then((res) => {
                         console.info(res.data);
                         this.plan = res.data.plan;
@@ -221,6 +366,14 @@
                         this.plan.seats = JSON.parse(this.plan.seats);
                         // JSON.parse将字符串，转换成对象
                         // 将字符串格式的二维数组转换成对象
+                        this.plan.seats.forEach(el => {
+                            el.forEach(e => {
+                                if (e == 0) {
+                                    this.usable++
+
+                                }
+                            })
+                        });
                     });
             }
         },
@@ -230,47 +383,6 @@
             this.planId = pid;
             this.findInfo(pid);
         }
-    });
-    $(function () {
-        $(".content-seats-info").on("click", ".box0", function () {
-            $(this).removeClass("box0").addClass("box2");
-            $(this).attr("data-status", "1");
-        });
-        $(".content-seats-info").on("click", ".box2", function () {
-            $(this).removeClass("box2").addClass("box0");
-            $(this).attr("data-status", "0");
-        });
-        $("#btnSubmitTicker").click(function () {
-            //第一步：获取坐位的信息
-            var arr = []; //用于保存我的座位信息
-            $(".content-seats-info>.seats_row").each(function (index, ele) {
-                //这个代表所有的行 所有的行又是一个数组
-                var rowArr = [];
-                $(this).children().each(function (index, ele) {
-                    rowArr.push(parseInt($(this).data("status")));
-                });
-                arr.push(rowArr);
-            });
-            //第二步：获取坐位的详细信息
-            var seats_info_Arr = []; //坐位的详细信息
-            $(".content-seats-info .box2").each(function (index, ele) {
-                seats_info_Arr.push($(this).data("text"));
-            });
-            //Ajax 的 Post请求向后台提交数据
-            $.post("http://localhost:8080/order/addOrder", {
-                plan_id: $("#p_id").val(),
-                price: parseFloat($("#p_price").val()) * seats_info_Arr.length,
-                seat: JSON.stringify(arr),
-                seat_info: seats_info_Arr.toString()
-            }, function (data) {
-                if (data.success) {
-                    console.info("提交成功");
-                }
-                else {
-                    console.info(data.message);
-                }
-            });
-        });
     });
 </script>
 

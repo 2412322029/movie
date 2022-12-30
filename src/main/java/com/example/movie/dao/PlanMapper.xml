@@ -5,6 +5,9 @@
         insert into tb_plan
         VALUES (#{id},#{playtime},#{price},#{seats},0,#{hall_id},#{movie_id})
     </insert>
+    <update id="updateSeats" parameterType="java.lang.String">
+        update tb_plan set seats=#{seats} where id=#{pid}
+    </update>
     <select id="checkUsable" resultType="integer">
         select count(*) from tb_plan
         where hall_id = #{hid} and #{t} &gt;= tb_plan.playtime

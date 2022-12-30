@@ -13,4 +13,6 @@ public interface UserService {
     List<User> findUserByPage(Integer pageNum, Integer pageSize);
 
     Integer findTotals();
+
+    Result<User> findOne(Integer uid);
 }

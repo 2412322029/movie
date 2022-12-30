@@ -1,6 +1,5 @@
 package com.example.movie.controller;
 
-import com.example.movie.pojo.Movie;
 import com.example.movie.pojo.Result;
 import com.example.movie.pojo.User;
 import com.example.movie.service.UserService;
@@ -46,4 +45,9 @@ public class UserController {
         map.put("pageNum",pageNum);
         return Result.success("分页用户查询成功",map);
     }
+
+    @GetMapping("/findUserById")
+    public Result<User> findUserById(@RequestParam("uid") Integer uid){
+        return userService.findOne(uid);
+    };
 }
